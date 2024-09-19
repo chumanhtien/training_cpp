@@ -1,334 +1,167 @@
-// vector_impl.h
-#ifndef MYVECTOR_IMPL_H
-#define MYVECTOR_IMPL_H
-
+#ifndef MYVECTOR_CPP
+#define MYVECTOR_CPP
 #include "vector.h"
-#include <iostream>
 
-// Constructors
-template <typename T>
-MyVector<T>::MyVector() : data(nullptr), size(0), capacity(0) {}
-
-template <typename T>
-MyVector<T>::MyVector(uint initialSize) : size(initialSize), capacity(initialSize) {
-    data = allocator.allocate(capacity);
-    for (uint i = 0; i < size; ++i) {
-        allocator.construct(&data[i], T());
-    }
+// Constructor khởi tạo vector
+template<typename T>
+Vector<T>::Vector() {
+    capacity = 1;                       
+    size = 0;                           
+    data = new T[capacity];             
 }
 
-template <typename T>
-MyVector<T>::MyVector(uint initialSize, const T& value) : size(initialSize), capacity(initialSize) {
-    data = allocator.allocate(capacity);
-    for (uint i = 0; i < size; ++i) {
-        allocator.construct(&data[i], value);
+// Constructor với initializer_list
+template<typename T>
+Vector<T>::Vector(std::initializer_list<T> initList) {
+    size = initList.size();
+    capacity = size;                    
+    data = new T[capacity];
+    int index = 0;
+    for (const T& value : initList) {
+        data[index++] = value;          
     }
-}
-
-template <typename T>
-MyVector<T>::MyVector(const MyVector& other) : size(other.size), capacity(other.capacity) {
-    data = allocator.allocate(capacity);
-    for (uint i = 0; i < size; ++i) {
-        allocator.construct(&data[i], other.data[i]);
-    }
-}
-
-template <typename T>
-MyVector<T>::MyVector(MyVector&& other) noexcept : data(other.data), size(other.size), capacity(other.capacity) {
-    other.data = nullptr;
-    other.size = 0;
-    other.capacity = 0;
 }
 
 // Destructor
-template <typename T>
-MyVector<T>::~MyVector() {
-    clear();
-    allocator.deallocate(data, capacity);
+template<typename T>
+Vector<T>::~Vector() {
+    delete[] data;                      
 }
 
-// Assignment operators
-template <typename T>
-MyVector<T>& MyVector<T>::operator=(const MyVector& other) {
-    if (this != &other) {
-        clear();
-        allocator.deallocate(data, capacity);
-        size = other.size;
-        capacity = other.capacity;
-        data = allocator.allocate(capacity);
-        for (uint i = 0; i < size; ++i) {
-            allocator.construct(&data[i], other.data[i]);
+// Hàm mở rộng sức chứa
+template<typename T>
+void Vector<T>::resizeCapacity(int newCapacity) {
+    T* newData = new T[newCapacity];    
+    for (int i = 0; i < size; i++) {
+        newData[i] = data[i];           
+    }
+    delete[] data;                      
+    data = newData;                     
+    capacity = newCapacity;             
+}
+
+// Lớp Iterator nội bộ
+template<typename T>
+Vector<T>::Iterator::Iterator(T* ptr) : ptr(ptr) {}
+
+template<typename T>
+T& Vector<T>::Iterator::operator*() { return *ptr; }
+
+template<typename T>
+typename Vector<T>::Iterator& Vector<T>::Iterator::operator++() {
+    ptr++;
+    return *this;
+}
+
+template<typename T>
+typename Vector<T>::Iterator Vector<T>::Iterator::operator++(int) {
+    Iterator temp = *this;
+    ptr++;
+    return temp;
+}
+
+template<typename T>
+bool Vector<T>::Iterator::operator==(const Iterator& other) const {
+    return ptr == other.ptr;
+}
+
+template<typename T>
+bool Vector<T>::Iterator::operator!=(const Iterator& other) const {
+    return ptr != other.ptr;
+}
+
+template<typename T>
+typename Vector<T>::Iterator Vector<T>::Iterator::operator+(int n) const {
+    return Iterator(ptr + n);
+}
+
+template<typename T>
+typename Vector<T>::Iterator Vector<T>::Iterator::operator-(int n) const {
+    return Iterator(ptr - n);
+}
+
+template<typename T>
+T* Vector<T>::Iterator::getPtr() const {
+    return ptr;
+}
+
+template<typename T>
+typename Vector<T>::Iterator Vector<T>::begin() {
+    return Iterator(data);              
+}
+
+template<typename T>
+typename Vector<T>::Iterator Vector<T>::end() {
+    return Iterator(data + size);       
+}
+
+template<typename T>
+void Vector<T>::push_back(T value) {
+    if (size == capacity) {
+        resizeCapacity(2 * capacity);    
+    }
+    data[size++] = value;               
+}
+
+template<typename T>
+void Vector<T>::pop_back() {
+    if (size > 0) {
+        size--;                         
+    } else {
+        std::cout << "Vector rỗng, không có phần tử để xóa." << std::endl;
+    }
+}
+
+template<typename T>
+void Vector<T>::resize(int newSize, T defaultValue) {
+    if (newSize > size) {
+        if (newSize > capacity) {
+            resizeCapacity(2 * capacity); 
+        }
+        for (int i = size; i < newSize; i++) {
+            data[i] = defaultValue;       
         }
     }
-    return *this;
+    size = newSize;                     
 }
 
-template <typename T>
-MyVector<T>& MyVector<T>::operator=(MyVector&& other) noexcept {
-    if (this != &other) {
-        clear();
-        allocator.deallocate(data, capacity);
-        data = other.data;
-        size = other.size;
-        capacity = other.capacity;
-        other.data = nullptr;
-        other.size = 0;
-        other.capacity = 0;
-    }
-    return *this;
-}
-
-// Capacity
-template <typename T>
-uint MyVector<T>::getSize() const {
+template<typename T>
+int Vector<T>::getSize() const {
     return size;
 }
 
-template <typename T>
-uint MyVector<T>::getCapacity() const {
-    return capacity;
-}
-
-template <typename T>
-uint MyVector<T>::max_size() const {
-    return std::allocator_traits<std::allocator<T>>::max_size(allocator);
-}
-
-template <typename T>
-bool MyVector<T>::empty() const {
-    return size == 0;
-}
-
-template <typename T>
-void MyVector<T>::reserve(uint newCapacity) {
-    if (newCapacity > capacity) {
-        reallocate(newCapacity);
-    }
-}
-
-template <typename T>
-void MyVector<T>::shrink_to_fit() {
-    if (size < capacity) {
-        reallocate(size);
-    }
-}
-
-template <typename T>
-void MyVector<T>::resize(uint newSize) {
-    resize(newSize, T());
-}
-
-template <typename T>
-void MyVector<T>::resize(uint newSize, const T& value) {
-    if (newSize > size) {
-        reserve(newSize);
-        for (uint i = size; i < newSize; ++i) {
-            allocator.construct(&data[i], value);
-        }
+template<typename T>
+T Vector<T>::at(int index) {
+    if (index >= 0 && index < size) {
+        return data[index];
     } else {
-        for (uint i = newSize; i < size; ++i) {
-            allocator.destroy(&data[i]);
-        }
-    }
-    size = newSize;
-}
-
-// Element access
-template <typename T>
-T& MyVector<T>::operator[](uint index) {
-    return data[index];
-}
-
-template <typename T>
-const T& MyVector<T>::operator[](uint index) const {
-    return data[index];
-}
-
-template <typename T>
-T& MyVector<T>::at(uint index) {
-    if (index >= size) {
-        throw std::out_of_range("Index out of bounds");
-    }
-    return data[index];
-}
-
-template <typename T>
-const T& MyVector<T>::at(uint index) const {
-    if (index >= size) {
-        throw std::out_of_range("Index out of bounds");
-    }
-    return data[index];
-}
-
-template <typename T>
-T& MyVector<T>::front() {
-    return data[0];
-}
-
-template <typename T>
-const T& MyVector<T>::front() const {
-    return data[0];
-}
-
-template <typename T>
-T& MyVector<T>::back() {
-    return data[size - 1];
-}
-
-template <typename T>
-const T& MyVector<T>::back() const {
-    return data[size - 1];
-}
-
-template <typename T>
-T* MyVector<T>::dataPtr() {
-    return data;
-}
-
-template <typename T>
-const T* MyVector<T>::dataPtr() const {
-    return data;
-}
-
-// Modifiers
-template <typename T>
-void MyVector<T>::push_back(const T& value) {
-    resize_if_needed();
-    allocator.construct(&data[size], value);
-    ++size;
-}
-
-template <typename T>
-void MyVector<T>::push_back(T&& value) {
-    resize_if_needed();
-    allocator.construct(&data[size], std::move(value));
-    ++size;
-}
-
-template <typename T>
-void MyVector<T>::pop_back() {
-    if (size > 0) {
-        allocator.destroy(&data[size - 1]);
-        --size;
+        std::cerr << "Index không hợp lệ!" << std::endl;
+        return T();
     }
 }
 
-template <typename T>
-void MyVector<T>::clear() {
-    for (uint i = 0; i < size; ++i) {
-        allocator.destroy(&data[i]);
+template<typename T>
+void Vector<T>::insert(Iterator position, T value) {
+    int index = position.getPtr() - data;
+    if (index < 0 || index >= size) {
+        std::cout << "Không tồn tại vị trí " << index << std::endl;
+        return;
     }
-    size = 0;
+    if (size == capacity) {
+        resizeCapacity(2 * capacity);
+    }
+    for (int i = size; i > index; i--) {
+        data[i] = data[i - 1];
+    }
+    data[index] = value;
+    size++;
 }
-
-template <typename T>
-void MyVector<T>::swap(MyVector& other) {
-    std::swap(data, other.data);
-    std::swap(size, other.size);
-    std::swap(capacity, other.capacity);
+    
+template<typename T>
+void Vector<T>::display() {
+    for (int i = 0; i < size; i++) {
+        std::cout << data[i] << " ";
+    }
+    std::cout << std::endl;
 }
-
-template <typename T>
-template <typename... Args>
-void MyVector<T>::emplace_back(Args&&... args) {
-    resize_if_needed();
-    allocator.construct(&data[size], std::forward<Args>(args)...);
-    ++size;
-}
-
-template <typename T>
-template <typename... Args>
-void MyVector<T>::emplace(Iterator position, Args&&... args) {
-    uint index = position - begin();
-    if (size >= capacity) {
-        reallocate(capacity == 0 ? 1 : capacity * 2);
-    }
-    for (uint i = size; i > index; --i) {
-        data[i] = std::move(data[i - 1]);
-    }
-    allocator.construct(&data[index], std::forward<Args>(args)...);
-    ++size;
-}
-
-template <typename T>
-void MyVector<T>::insert(Iterator position, const T& value) {
-    uint index = position - begin();
-    if (size >= capacity) {
-        reallocate(capacity == 0 ? 1 : capacity * 2);
-    }
-    for (uint i = size; i > index; --i) {
-        data[i] = std::move(data[i - 1]);
-    }
-    allocator.construct(&data[index], value);
-    ++size;
-    // return;
-}
-
-template <typename T>
-void MyVector<T>::insert(Iterator position, T&& value) {
-    uint index = position - begin();
-    std::cout<<"index: "<<index<<'\n';
-
-    if (size >= capacity) {
-        reallocate(capacity == 0 ? 1 : capacity * 2);
-    }
-    for (uint i = size; i > index; --i) {
-        data[i] = std::move(data[i - 1]);
-    }
-    allocator.construct(&data[index], std::move(value));
-    ++size;
-    // return Iterator(data + index);
-}
-
-template <typename T>
-typename MyVector<T>::Iterator MyVector<T>::erase(Iterator position) {
-    uint index = position - begin();
-    allocator.destroy(&data[index]);
-    for (uint i = index; i < size - 1; ++i) {
-        data[i] = std::move(data[i + 1]);
-    }
-    --size;
-    return Iterator(data + index);
-}
-
-template <typename T>
-typename MyVector<T>::Iterator MyVector<T>::erase(Iterator first, Iterator last) {
-    uint firstIndex = first - begin();
-    uint lastIndex = last - begin();
-    for (uint i = firstIndex; i < lastIndex; ++i) {
-        allocator.destroy(&data[i]);
-    }
-    for (uint i = lastIndex; i < size; ++i) {
-        data[firstIndex + (i - lastIndex)] = std::move(data[i]);
-    }
-    size -= (lastIndex - firstIndex);
-    return Iterator(data + firstIndex);
-}
-
-// Allocator
-template <typename T>
-std::allocator<T> MyVector<T>::get_allocator() const {
-    return allocator;
-}
-
-// Private helper functions
-template <typename T>
-void MyVector<T>::resize_if_needed() {
-    if (size >= capacity) {
-        reallocate(capacity == 0 ? 1 : capacity * 2);
-    }
-}
-
-template <typename T>
-void MyVector<T>::reallocate(uint newCapacity) {
-    T* newData = allocator.allocate(newCapacity);
-    for (uint i = 0; i < size; ++i) {
-        allocator.construct(&newData[i], std::move(data[i]));
-        allocator.destroy(&data[i]);
-    }
-    allocator.deallocate(data, capacity);
-    data = newData;
-    capacity = newCapacity;
-}
-
 #endif

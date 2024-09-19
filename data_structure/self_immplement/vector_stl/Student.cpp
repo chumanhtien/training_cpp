@@ -1,10 +1,9 @@
 // Student.cpp
-#include <iostream>
 #include "Student.h"
+#include <iostream>
 
-Student::Student() 
-    : name("Unknown"), age(0), gpa(0.0f) {}
-
+Student::Student()
+    : name("Default name"), age(0), gpa(0.0f) {}
 Student::Student(const std::string& name, int age, float gpa)
     : name(name), age(age), gpa(gpa) {}
 
