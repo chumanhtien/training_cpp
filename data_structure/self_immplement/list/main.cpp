@@ -1,7 +1,7 @@
 #include <iostream>
 #include "list.h"
 #include "student.h"
-
+// NOTE: Dùng linked list khi muốn tận dùng bộ nhớ nhỏ nằm rải rác
 int main() {
     MyList<Student> list;
 

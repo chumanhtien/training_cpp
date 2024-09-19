@@ -30,11 +30,14 @@ public:
 
         T& operator*() { return current->data; }
         
+        // operator overloading
+        // prefix
         iterator& operator++() {
             current = current->next;
             return *this;
         }
 
+        // post fix
         iterator operator++(int) {
             iterator temp = *this;
             ++(*this);
