@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "capybara.h": "c",
+        "iostream": "cpp"
+    }
+}

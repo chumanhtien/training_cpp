@@ -1,0 +1,15 @@
+GCC = g++
+CFLAGS = -g -Wall
+
+all: build
+#dependency co 2 TH: 1 la file da co, 2 la tim target
+build: capybara
+	$(GCC) $(CFLAGS) -c capybara.cpp -o capybara.o
+	$(GCC) $(CFLAGS) -c main.cpp -o main.o
+	$(GCC) $(CFLAGS) main.o capybara.o -o capybara
+
+dependency:
+	touch test2
+
+clean:
+	rm *.o

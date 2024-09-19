@@ -1,0 +1,11 @@
+CC = g++
+CFLAGS = -g -Wall
+
+capybara: main.o capybara.o
+	g++ $^ -o $@
+clean: 
+	rm *.o
+# Implicit: khoong co  2 cai rule cho dependency => chay ngam dinh => make file da co san rules (implicit rules) cho viec complie tu .cpp -> .o
+# 3 rule ngam dinh
+# complie tu .cpp -> .o hoac .c -> .o (target.o)
+# link casc file .o lai

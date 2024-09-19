@@ -1,0 +1,9 @@
+CXX = g++
+CC = g++
+capybara: main.o capybara.o
+
+%.o: %.cpp
+	$(CXX) $(CFLAGS) -c $< -o $@
+
+clean: 
+	rm *.o

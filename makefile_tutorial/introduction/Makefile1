@@ -1,0 +1,14 @@
+CC = g++
+CFLAGS = -g -Wall
+
+capybara: main.o capybara.o
+	g++ $^ -o $@
+
+main.o: main.cpp
+	g++ -c $< -o $@
+
+capybara.o: capybara.cpp
+	g++ -c $< -o $@
+
+clean: 
+	rm *.o

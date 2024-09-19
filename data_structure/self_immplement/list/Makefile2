@@ -1,0 +1,31 @@
+#exe file
+TARGET = my_program
+
+#complier
+CXX = g++
+
+# flag for compiler
+CXXFLAGS = -Wall -g
+
+# .cpp files
+SRCS = main.cpp student.cpp list.cpp
+
+#list object files from code files
+OBJS = $(SRCS:.cpp=.o)
+
+#run when call make
+all: $(TARGET)
+
+#linking .o and create exe file
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+
+# complie .o to .cpp
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< $@
+
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+run: $(TARGET)
+	./$(TARGET)
