@@ -54,7 +54,7 @@ void ManagerOfficer::resize() {
     capacity = newCapacity;
 }
 
-Officer** ManagerOfficer::searchByName(std::string name) {
+std::pair<Officer**, uint> ManagerOfficer::searchByName(std::string name) {
     Officer** foundOfficers = new Officer*[size]; // Giả sử tất cả đều tìm thấy
         uint count = 0; // Đếm số lượng Officer tìm thấy
 
@@ -64,7 +64,7 @@ Officer** ManagerOfficer::searchByName(std::string name) {
             }
         }
 
-        return foundOfficers; // Trả về mảng Officer tìm thấy
+    return std::make_pair(foundOfficers, count); // Trả về mảng và số lượng tìm thấy
 }
 
 void ManagerOfficer::showListInfor() {

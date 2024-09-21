@@ -11,7 +11,7 @@ class Worker : public Officer {
     public:
         // Constructor
         Worker();
-        Worker(std::string fullName, uint age, std::string gender, std::string address, uint level);
+        Worker(std::string fullName, uint age, uint gender, std::string address, uint level);
 
         // Destructor
         ~Worker();

@@ -8,13 +8,13 @@ class Officer {
     protected:
         std::string fullName; 
         uint age;
-        std::string gender;
+        uint gender;
         std::string address;
     
     public:
         // Constructor
         Officer();
-        Officer(std::string fullName, uint age, std::string gender, std::string address);
+        Officer(std::string fullName, uint age, uint gender, std::string address);
 
         // Destructor
         virtual ~Officer();
@@ -26,8 +26,8 @@ class Officer {
         uint getAge() const;
         void setAge(uint age);
 
-        std::string getGender() const;
-        void setGender(std::string gender);
+        uint getGender() const;
+        void setGender(uint gender);
 
         std::string getAddress() const;
         void setAddress(std::string address);

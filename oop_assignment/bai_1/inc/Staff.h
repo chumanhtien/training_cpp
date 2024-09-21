@@ -10,7 +10,7 @@ class Staff : public Officer {
     public:
         // Constructor
         Staff();
-        Staff(std::string fullName, uint age, std::string gender, std::string address, std::string task);
+        Staff(std::string fullName, uint age, uint gender, std::string address, std::string task);
 
         // Destructor
         ~Staff();

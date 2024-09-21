@@ -1,9 +1,10 @@
 #include "../inc/Officer.h"
+#include "../inc/helpers.h"
 
 Officer::Officer() : 
-    fullName("Name Default"), age(18), gender("Male"), address("NULL") {}
+    fullName("Name Default"), age(18), gender(2), address("NULL") {}
 
-Officer::Officer(std::string fullName, uint age, std::string gender, std::string address) : 
+Officer::Officer(std::string fullName, uint age, uint gender, std::string address) : 
     fullName(fullName), age(age), gender(gender), address(address) {}
 
 Officer::~Officer() {
@@ -26,11 +27,11 @@ void Officer::setAge(uint age) {
     this->age = age;
 }
 
-std::string Officer::getGender() const {
+uint Officer::getGender() const {
     return gender;
 }
 
-void Officer::setGender(std::string gender) {
+void Officer::setGender(uint gender) {
     this->gender = gender;
 }
 
@@ -44,5 +45,5 @@ void Officer::setAddress(std::string address) {
 
 std::string Officer::toString() const {
     return "Full Name: " + fullName + ", Age: " + std::to_string(age) + 
-           ", Gender: " + gender + ", Address: " + address;
+           ", Gender: " + convertInputToGender(gender) + ", Address: " + address;
 }

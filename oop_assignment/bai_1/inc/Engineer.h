@@ -11,7 +11,7 @@ class Engineer : public Officer {
     public:
         // Constructor
         Engineer();
-        Engineer(std::string fullName, uint age, std::string gender, std::string address, std::string major);
+        Engineer(std::string fullName, uint age, uint gender, std::string address, std::string major);
 
         // Destructor
         ~Engineer();

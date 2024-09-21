@@ -2,7 +2,7 @@
 
 Worker::Worker() : 
     Officer(), level(0) {}
-Worker::Worker(std::string fullName, uint age, std::string gender, std::string address, uint level) : 
+Worker::Worker(std::string fullName, uint age, uint gender, std::string address, uint level) : 
     Officer(fullName, age, gender, address), level(level) {}
 
 Worker::~Worker() {
@@ -19,6 +19,5 @@ void Worker::setLevel(uint level) {
 }
 
 std::string Worker::toString() const {
-    return "Full Name: " + fullName + ", Age: " + std::to_string(age) + 
-           ", Gender: " + gender + ", Address: " + address + "Level: " + std::to_string(level);
+    return Officer::toString() +  ", Level: " + std::to_string(level);
 }

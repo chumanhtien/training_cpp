@@ -2,7 +2,7 @@
 
 Engineer::Engineer() : 
     Officer(), major("MAJOR NULL") {}
-Engineer::Engineer(std::string fullName, uint age, std::string gender, std::string address, std::string major) :
+Engineer::Engineer(std::string fullName, uint age, uint gender, std::string address, std::string major) :
     Officer(fullName, age, gender, address), major(major) {}
 
 Engineer::~Engineer() {
@@ -18,6 +18,5 @@ void Engineer::setMajor(std::string major) {
 }
 
 std::string Engineer::toString() const {
-    return "Full Name: " + fullName + ", Age: " + std::to_string(age) + 
-           ", Gender: " + gender + ", Address: " + address + ", Major: " + major;
+    return Officer::toString() +  ", Major: " + major;
 }

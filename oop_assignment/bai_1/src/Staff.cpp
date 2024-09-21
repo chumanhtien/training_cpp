@@ -2,7 +2,7 @@
 
 Staff::Staff() : 
     Officer(), task("TASK NULL") {}
-Staff::Staff(std::string fullName, uint age, std::string gender, std::string address, std::string task) : 
+Staff::Staff(std::string fullName, uint age, uint gender, std::string address, std::string task) : 
     Officer(fullName, age, gender, address), task(task) {}
 
 Staff::~Staff() {
@@ -18,6 +18,5 @@ void Staff::setTask(std::string task) {
 }
 
 std::string Staff::toString() const {
-    return "Full Name: " + fullName + ", Age: " + std::to_string(age) + 
-           ", Gender: " + gender + ", Address: " + address + ", Task: " + task;
+    return Officer::toString() + ", Task: " + task;
 }

@@ -1,7 +1,7 @@
 #ifndef MY_MANAGEROFFICER
 #define MY_MANAGEROFFICER
 #include "Officer.h"
-
+#include <utility>
 class ManagerOfficer {
     private:
         Officer** officers;
@@ -22,7 +22,7 @@ class ManagerOfficer {
 
         void add(Officer* officer);
         void resize();
-        Officer** searchByName(std::string name);
+        std::pair<Officer**, uint> searchByName(std::string name);
         void showListInfor();
 };
 #endif
