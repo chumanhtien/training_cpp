@@ -8,20 +8,20 @@ typedef unsigned int uint;
 
 class Candidate {
 protected:
-    string id;
+    uint id;
     string name;
     string address;
-    uint priotiry;
+    uint priority;
 
 public: 
     Candidate();
-    Candidate(string id, string name, string address, uint priority);
+    Candidate(uint id, string name, string address, uint priority);
 
     virtual ~Candidate();
 
     // getter & setter
-    string getId() const;
-    void setId(string id);
+    uint getId() const;
+    void setId(uint id);
 
     string getName() const;
     void setName(string name);
@@ -32,6 +32,7 @@ public:
     uint getPriority() const;
     void setPriority(uint priority);
 
-    virtual string toString() const;
+    virtual string toString() const = 0;
 };
+
 #endif
