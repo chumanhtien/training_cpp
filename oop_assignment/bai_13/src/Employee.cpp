@@ -71,3 +71,7 @@ void Employee::removeCertificate(const std::string& certificateId) {
         }
     }
 }
+
+void Employee::setCertificates(const std::list<Certificate>& newCertificates) {
+    certificates = newCertificates;
+}

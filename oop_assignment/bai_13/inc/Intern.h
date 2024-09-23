@@ -27,6 +27,7 @@ public:
     void setUniversity(const std::string& newUniversity);
 
     void showInfo() const override;
+    void updateInfo() override;
 };
 
 #endif

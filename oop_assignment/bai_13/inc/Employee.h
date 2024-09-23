@@ -44,10 +44,11 @@ public:
     void setPhone(const std::string& newPhone);
     void setEmail(const std::string& newEmail);
     void setEmployeeType(uint newEmployeeType);
+    void setCertificates(const std::list<Certificate>& certificates);
 
     // Pure virtual method
     virtual void showInfo() const = 0;
-    // virtual void updateInfo() const = 0;
+    virtual void updateInfo() = 0;
     void addCertificate(const Certificate& certificate);
     void removeCertificate(const std::string& certificateId);
 };

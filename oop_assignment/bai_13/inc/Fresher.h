@@ -28,6 +28,7 @@ public:
 
     // Phương thức showInfo
     void showInfo() const override;
+    void updateInfo() override;
 };
 
 #endif
