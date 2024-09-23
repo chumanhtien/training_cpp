@@ -4,10 +4,13 @@
 #include "../inc/Experience.h"
 #include "../inc/Fresher.h"
 #include "../inc/Intern.h"
+#include "../inc/Validator.h"
 
 int main() {
     Company company;
     int choice;
+    Validator validator;
+
     // Add initial employees with certificates
     std::list<Certificate> certsForE001 = {
         Certificate("C001", "Chứng chỉ Lập trình C++", "Xuất sắc", "2020-01-01"),
@@ -75,37 +78,85 @@ int main() {
 
         switch (choice) {
         case 1:
-            std::cout << "Nhập loại nhân viên (1: Experience, 2: Fresher, 3: Intern): ";
+            std::cout << "Enter type (1: Experience, 2: Fresher, 3: Intern): ";
             std::cin >> employeeType;
 
-            std::cout << "Nhập ID: ";
+            std::cout << "Enter ID: ";
             std::cin >> id;
-            std::cout << "Nhập họ tên: ";
+
+            std::cout << "Enter fullname: ";
             std::cin.ignore();
-            std::getline(std::cin, fullName);
-            std::cout << "Nhập ngày sinh: ";
-            std::cin >> birthday;
-            std::cout << "Nhập số điện thoại: ";
-            std::cin >> phone;
-            std::cout << "Nhập email: ";
-            std::cin >> email;
+            do {
+                std::cout << "Enter new Full Name: ";
+                std::getline(std::cin, fullName);
+                try {
+                    validator.validateFullName(fullName);
+                    break; // Thoát vòng lặp nếu hợp lệ
+                } catch (const FullNameException& e) {
+                    std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+                }
+            } while (true);
+
+            do {
+                std::cout << "Enter new Birthday (YYYY-MM-DD): ";
+                std::getline(std::cin, birthday);
+                try {
+                    validator.validateBirthday(birthday);
+                    break; // Thoát vòng lặp nếu hợp lệ
+                } catch (const BirthDayException& e) {
+                    std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+                }
+            } while (true);
+
+            do {
+                std::cout << "Enter Phone: ";
+                std::getline(std::cin, phone);
+                try {
+                    validator.validatePhone(phone);
+                    break; // Thoát vòng lặp nếu hợp lệ
+                } catch (const PhoneException& e) {
+                    std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+                }
+            } while (true);
+
+            do {
+                std::cout << "Enter  Email: ";
+                std::getline(std::cin, email);
+                try {
+                    validator.validateEmail(email);
+                    break; // Thoát vòng lặp nếu hợp lệ
+                } catch (const EmailException& e) {
+                    std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+                }
+            } while (true);
 
             if (employeeType == 1) {
-                std::cout << "Nhập số năm kinh nghiệm: ";
+                std::cout << "Enter years of Exp: ";
                 std::cin >> yearsOfExperience;
-                std::cout << "Nhập kỹ năng: ";
+
+                std::cout << "Enter skills: ";
                 std::cin.ignore();
                 std::getline(std::cin, skill);
                 std::shared_ptr<Employee> experienceEmployee = std::make_shared<Experience>(id, fullName, birthday, phone, email, yearsOfExperience, skill);
                 company.addEmployee(experienceEmployee);
             } else if (employeeType == 2) {
-                std::cout << "Nhập ngày tốt nghiệp: ";
-                std::cin >> graduationDate;
+                do {
+                    std::cout << "Enter graduation date: ";
+                    std::getline(std::cin, graduationDate);
+                    try {
+                        validator.validateDate(graduationDate);
+                        break; // Thoát vòng lặp nếu hợp lệ
+                    } catch (const EmailException& e) {
+                        std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+                    }
+                } while (true);
+
                 std::cout << "Nhập xếp hạng tốt nghiệp: ";
-                std::cin >> graduationRank;
+                std::getline(std::cin, graduationRank);
+
                 std::cout << "Nhập tên trường đại học: ";
-                std::cin.ignore();
                 std::getline(std::cin, education);
+
                 std::shared_ptr<Employee> fresherEmployee = std::make_shared<Fresher>(id, fullName, birthday, phone, email, graduationDate, graduationRank, education);
                 company.addEmployee(fresherEmployee);
             } else if (employeeType == 3) {
@@ -122,6 +173,8 @@ int main() {
             } else {
                 std::cout << "Loại nhân viên không hợp lệ!" << std::endl;
             }
+
+            std::cout << "Nhap certificates? (Y/n)?"
             break;
 
         case 2:

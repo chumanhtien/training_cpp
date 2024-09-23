@@ -130,8 +130,16 @@ void Fresher::updateInfo() {
     std::cout << "Current Graduation Date: " << graduationDate << ". Do you want to update it? (y/n): ";
     std::getline(std::cin, input);
     if (input == "y" || input == "Y") {
-        std::cout << "Enter new Graduation Date: ";
-        std::getline(std::cin, newGraduationDate);
+        do {
+            std::cout << "Enter new Email: ";
+            std::getline(std::cin, graduationDate);
+            try {
+                validator.validateDate(graduationDate);
+                break; // Thoát vòng lặp nếu hợp lệ
+            } catch (const EmailException& e) {
+                std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+            }
+        } while (true);
     }
 
     // Cập nhật Graduation Rank
