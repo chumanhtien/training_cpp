@@ -77,15 +77,14 @@ int main() {
         int employeeType;
 
         switch (choice) {
-        case 1:
+        case 1: {
+
             std::cout << "Enter type (1: Experience, 2: Fresher, 3: Intern): ";
             std::cin >> employeeType;
 
             std::cout << "Enter ID: ";
-            std::cin >> id;
+            std::getline(std::cin, id);
 
-            std::cout << "Enter fullname: ";
-            std::cin.ignore();
             do {
                 std::cout << "Enter new Full Name: ";
                 std::getline(std::cin, fullName);
@@ -130,6 +129,42 @@ int main() {
                 }
             } while (true);
 
+            std::list<Certificate> certificates;
+
+            std::cout << "Enter certificates for employee? (Y/n)?: " << std::endl;
+            std::string input;
+            std::getline(std::cin, input);
+            if (input == "Y" || input == "y") {
+                int numberOfCertificates;
+                std::cout << "Enter numbẻ of certificates: ";
+                std::cin >> numberOfCertificates;
+
+                for (int i = 0; i < numberOfCertificates; ++i) {
+                    std::string certId, certName, certRank, certDate;
+                    std::cout << "Enter certificate Id: " << (i + 1) << ": ";
+                    std::getline(std::cin, certId);
+
+                    std::cout << "Enter certificate name: " << (i + 1) << ": ";
+                    std::getline(std::cin, certName);
+
+                    std::cout << "Enter certificate rank: " << (i + 1) << ": ";
+                    std::getline(std::cin, certRank);
+
+                    do {
+                        std::cout << "Enter graduation date: ";
+                        std::getline(std::cin, certDate);
+                        try {
+                            validator.validateDate(certDate);
+                            break; // Thoát vòng lặp nếu hợp lệ
+                        } catch (const DateException& e) {
+                            std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+                        }
+                    } while (true);
+
+                    certificates.emplace_back(certId, certName, certRank, certDate);
+                }
+            }
+
             if (employeeType == 1) {
                 std::cout << "Enter years of Exp: ";
                 std::cin >> yearsOfExperience;
@@ -137,7 +172,7 @@ int main() {
                 std::cout << "Enter skills: ";
                 std::cin.ignore();
                 std::getline(std::cin, skill);
-                std::shared_ptr<Employee> experienceEmployee = std::make_shared<Experience>(id, fullName, birthday, phone, email, yearsOfExperience, skill);
+                std::shared_ptr<Employee> experienceEmployee = std::make_shared<Experience>(id, fullName, birthday, phone, email, yearsOfExperience, skill, certificates);
                 company.addEmployee(experienceEmployee);
             } else if (employeeType == 2) {
                 do {
@@ -146,7 +181,7 @@ int main() {
                     try {
                         validator.validateDate(graduationDate);
                         break; // Thoát vòng lặp nếu hợp lệ
-                    } catch (const EmailException& e) {
+                    } catch (const DateException& e) {
                         std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
                     }
                 } while (true);
@@ -157,7 +192,7 @@ int main() {
                 std::cout << "Nhập tên trường đại học: ";
                 std::getline(std::cin, education);
 
-                std::shared_ptr<Employee> fresherEmployee = std::make_shared<Fresher>(id, fullName, birthday, phone, email, graduationDate, graduationRank, education);
+                std::shared_ptr<Employee> fresherEmployee = std::make_shared<Fresher>(id, fullName, birthday, phone, email, graduationDate, graduationRank, education, certificates);
                 company.addEmployee(fresherEmployee);
             } else if (employeeType == 3) {
                 std::cout << "Nhập chuyên ngành: ";
@@ -168,14 +203,14 @@ int main() {
                 std::cout << "Nhập tên trường đại học: ";
                 std::cin.ignore();
                 std::getline(std::cin, university);
-                std::shared_ptr<Employee> internEmployee = std::make_shared<Intern>(id, fullName, birthday, phone, email, major, semester, university);
+                std::shared_ptr<Employee> internEmployee = std::make_shared<Intern>(id, fullName, birthday, phone, email, major, semester, university, certificates);
                 company.addEmployee(internEmployee);
             } else {
                 std::cout << "Loại nhân viên không hợp lệ!" << std::endl;
             }
 
-            std::cout << "Nhap certificates? (Y/n)?"
             break;
+        }
 
         case 2:
             std::cout << "Nhập ID nhân viên cần sửa: ";

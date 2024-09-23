@@ -131,12 +131,12 @@ void Fresher::updateInfo() {
     std::getline(std::cin, input);
     if (input == "y" || input == "Y") {
         do {
-            std::cout << "Enter new Email: ";
+            std::cout << "Enter new graduation Date: ";
             std::getline(std::cin, graduationDate);
             try {
                 validator.validateDate(graduationDate);
                 break; // Thoát vòng lặp nếu hợp lệ
-            } catch (const EmailException& e) {
+            } catch (const DateException& e) {
                 std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
             }
         } while (true);
