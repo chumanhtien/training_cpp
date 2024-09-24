@@ -43,4 +43,4 @@ run:
 
 # Quy tắc dọn dẹp
 clean:
-	$(RM) $(TARGET_DIR)\*.o $(TARGET_DIR)\*.exe
+	$(RM) $(TARGET_DIR)/*.o $(TARGET_DIR)/*.exe
