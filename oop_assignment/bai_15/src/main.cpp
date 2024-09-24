@@ -8,22 +8,40 @@
 #include "../inc/RegularStudent.h"
 #include "../inc/PartTimeStudent.h"
 #include "../inc/AcademicResult.h"
+#include "../inc/Validator.h"
 
 using namespace std;
 
 void inputAcademicResults(map<string, AcademicResult> &results) {
     int n;
+    Validator validator;
     cout << "Enter number of academic results: ";
     cin >> n;
     cin.ignore();
     for (int i = 0; i < n; i++) {
         string semester;
         double averageGrade;
-        cout << "Enter semester name: ";
-        getline(cin, semester);
-        cout << "Enter average grade: ";
-        cin >> averageGrade;
-        cin.ignore();
+        do {
+            cout << "Enter semester name: ";
+            getline(cin, semester);
+            try {
+                validator.validateSemesterName(semester);
+                break; // Thoát vòng lặp nếu hợp lệ
+            } catch (const SemesterNameException& e) {
+                std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+            }
+        } while (true);
+
+        do {
+            cout << "Enter average grade: ";
+            cin >> averageGrade; cin.ignore();
+            try {
+                validator.validateEntryScore(averageGrade);
+                break; // Thoát vòng lặp nếu hợp lệ
+            } catch (const EntryCoreException& e) {
+                std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+            }
+        } while (true);
         AcademicResult result(semester, averageGrade);
         // Insert into the map using semester as the key and result as the value
         results.emplace(semester, result); 
@@ -35,24 +53,59 @@ void inputStudent(shared_ptr<Student> &student) {
     uint year;
     double score;
     string affiliation;
+    Validator validator;
 
     cout << "Enter student ID: ";
-    cin >> id;
-    cout << "Enter full name: ";
-    cin.ignore();
     getline(cin, name);
-    cout << "Enter date of birth (YYYY-MM-DD): ";
-    cin >> dob;
-    cout << "Enter enrollment year: ";
-    cin >> year; cin.ignore();
-    cout << "Enter entry score: ";
-    cin >> score; cin.ignore();
+
+    do {
+        cout << "Enter full name: ";
+        getline(cin, name);
+        try {
+            validator.validateFullName(name);
+            break; // Thoát vòng lặp nếu hợp lệ
+        } catch (const FullNameException& e) {
+            std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+        }
+    } while (true);
+
+    do {
+        std::cout << "Enter date of birth (YYYY-MM-DD):";
+        std::getline(std::cin, dob);
+        try {
+            validator.validateBirthday(dob);
+            break; // Thoát vòng lặp nếu hợp lệ
+        } catch (const BirthDayException& e) {
+            std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+        }
+    } while (true);
+
+    do {
+        std::cout << "Enter enrollment year: ";
+        cin >> year; cin.ignore();
+        try {
+            validator.validateEnrollmentYear(year);
+            break; // Thoát vòng lặp nếu hợp lệ
+        } catch (const EncrollmentYearException& e) {
+            std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+        }
+    } while (true);
+
+    do {
+        std::cout << "Enter entry score: ";
+        cin >> score; cin.ignore();
+        try {
+            validator.validateEntryScore(score);
+            break; // Thoát vòng lặp nếu hợp lệ
+        } catch (const EntryCoreException& e) {
+            std::cout << "Error: " << e.what() << ". Please try again." << std::endl;
+        }
+    } while (true);
 
     int type;
     cout << "Enter 1 for Regular Student or 2 for Part-Time Student: ";
     cin >> type;
     cin.ignore();
-
 
     map<std::string, AcademicResult> results;
     inputAcademicResults(results);
@@ -175,6 +228,7 @@ int main() {
         cout << "0. Exit\n";
         cout << "Choose an option: ";
         cin >> choice;
+        cin.ignore();
 
         switch (choice) {
             case 1: {
