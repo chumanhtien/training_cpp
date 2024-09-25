@@ -13,7 +13,7 @@ protected:
     std::string dateOfBirth;
     uint enrollmentYear;
     double entryScore;
-    std::map<std::string, AcademicResult> results;
+    std::map<std::string, AcademicResult> results; // Composition
 
 public:
     Student(const std::string &id, const std::string &name, const std::string &dob,
